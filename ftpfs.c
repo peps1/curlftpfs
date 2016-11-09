@@ -142,7 +142,7 @@ static struct fuse_opt ftpfs_opts[] = {
   FTPFS_OPT("ssl",                use_ssl, CURLFTPSSL_ALL),
   FTPFS_OPT("ssl_control",        use_ssl, CURLFTPSSL_CONTROL),
   FTPFS_OPT("ssl_try",            use_ssl, CURLFTPSSL_TRY),
-  FTPFS_OPT("no_verify_hostname", no_verify_hostname, 1),
+  FTPFS_OPT("no_verify_hostname", no_verify_hostname, 2),
   FTPFS_OPT("no_verify_peer",     no_verify_peer, 1),
   FTPFS_OPT("cert=%s",            cert, 0),
   FTPFS_OPT("cert_type=%s",       cert_type, 0),
@@ -1627,7 +1627,7 @@ static void set_common_curl_stuff(CURL* easy) {
   if (ftpfs.no_verify_hostname) {
     /* The default is 2 which verifies even the host string. This sets to 1
      * which means verify the host but not the string. */
-    curl_easy_setopt_or_die(easy, CURLOPT_SSL_VERIFYHOST, 1);
+    curl_easy_setopt_or_die(easy, CURLOPT_SSL_VERIFYHOST, 0);
   }
 
   curl_easy_setopt_or_die(easy, CURLOPT_INTERFACE, ftpfs.interface);
