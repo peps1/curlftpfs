@@ -1,3 +1,8 @@
+Nov 09, 2016
+Add PRET support
+bump to 0.9.3; requires libcurl >=7.20.0
+danoe
+
 Apr 29, 2008
 release curlftpfs 0.9.2
 mail2nob

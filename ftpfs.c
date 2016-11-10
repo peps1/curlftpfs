@@ -135,6 +135,7 @@ static struct fuse_opt ftpfs_opts[] = {
   FTPFS_OPT("skip_pasv_ip",       skip_pasv_ip, 1),
   FTPFS_OPT("ftp_port=%s",        ftp_port, 0),
   FTPFS_OPT("disable_eprt",       disable_eprt, 1),
+  FTPFS_OPT("enable_pret",        enable_pret, 1),
   FTPFS_OPT("ftp_method=%s",      ftp_method, 0),
   FTPFS_OPT("custom_list=%s",     custom_list, 0),
   FTPFS_OPT("tcp_nodelay",        tcp_nodelay, 1),
@@ -1456,6 +1457,7 @@ static void usage(const char* progname) {
 "    skip_pasv_ip        skip the IP address for PASV\n"
 "    ftp_port=STR        use PORT with address instead of PASV\n"
 "    disable_eprt        use PORT, without trying EPRT first\n"
+"    enable_pret         use PRET command before PASV\n"
 "    ftp_method          [multicwd/singlecwd] Control CWD usage\n"
 "    custom_list=STR     Command used to list files. Defaults to \"LIST -a\"\n"
 "    tcp_nodelay         use the TCP_NODELAY option\n"
@@ -1559,6 +1561,11 @@ static void set_common_curl_stuff(CURL* easy) {
 
   if (ftpfs.disable_eprt) {
     curl_easy_setopt_or_die(easy, CURLOPT_FTP_USE_EPRT, FALSE);
+  }
+
+  if (ftpfs.enable_pret) {
+    /* Needs libcurl in >= 7.20.0 */
+    curl_easy_setopt_or_die(easy, CURLOPT_FTP_USE_PRET, TRUE);
   }
 
   if (ftpfs.ftp_method) {
