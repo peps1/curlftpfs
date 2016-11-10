@@ -649,7 +649,6 @@ static int create_empty_file(const char * path)
   pthread_mutex_lock(&ftpfs.lock);
   cancel_previous_multi();
   curl_easy_setopt_or_die(ftpfs.connection, CURLOPT_URL, full_path);
-  curl_easy_setopt_or_die(ftpfs.connection, CURLOPT_INFILESIZE, 0);
   curl_easy_setopt_or_die(ftpfs.connection, CURLOPT_UPLOAD, 1);
   curl_easy_setopt_or_die(ftpfs.connection, CURLOPT_READDATA, NULL);
   CURLcode curl_res = curl_easy_perform(ftpfs.connection);
@@ -763,13 +762,13 @@ static int ftpfs_open_common(const char* path, mode_t mode,
 		err = -ENOTSUP;
 	  }
 	  
-	  if ((fi->flags & O_EXCL))
-	  {
-		DEBUG(1, "opening %s with O_EXCL - testing existence\n", path);
-		int exists_r = test_exists(path);
-		if (exists_r != -ENOENT)
-			err = -EACCES;
-	  }
+	  //if ((fi->flags & O_EXCL))
+	  //{
+		//DEBUG(1, "opening %s with O_EXCL - testing existence\n", path);
+		//int exists_r = test_exists(path);
+		//if (exists_r != -ENOENT)
+		//	err = -EACCES;
+	  //}
 	  
 	  if (!err)
 	  {
@@ -820,6 +819,7 @@ static int ftpfs_open(const char* path, struct fuse_file_info* fi) {
 #if FUSE_VERSION >= 25
 static int ftpfs_create(const char* path, mode_t mode,
                         struct fuse_file_info* fi) {
+  ftpfs_mknod(path, mode, NULL);
   return ftpfs_open_common(path, mode, fi);
 }
 #endif
